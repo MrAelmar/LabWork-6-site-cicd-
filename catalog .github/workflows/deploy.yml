@@ -1,3 +1,32 @@
+name: Deploy with Linting
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Super-Linter (HTML/CSS)
+        uses: github/super-linter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false      # проверять только изменённые файлы
+          VALIDATE_HTML: true               # включить проверку HTML
+          VALIDATE_CSS: true                # включить проверку CSS
+          DEFAULT_BRANCH: main
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: lint                             # деплой только после успешного линтинга
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      # ... ваши шаги деплоя ...
 name: Deploy static site
 on:
   push:
